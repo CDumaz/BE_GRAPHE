@@ -32,10 +32,34 @@ public class Path {
      * 
      * @deprecated Need to be implemented.
      */
-    public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
+	public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
         List<Arc> arcs = new ArrayList<Arc>();
-        // TODO:
+        
+        double vitesseMin;
+        Arc arc1=null;
+        if(nodes.size() == 1) {
+            return new Path(graph, arcs);
+        }
+        
+        for(int j=0;j<nodes.size()-1;j++) {
+        	
+        	
+        	for(int i=0;i<nodes.get(j).getNumberOfSuccessors();i++) {
+        		vitesseMin=nodes.get(j).getSuccessors().get(i).getMinimumTravelTime();
+        		if(nodes.get(j).getSuccessors().get(i).getDestination()==nodes.get(j+1)) {
+        			
+        			if(nodes.get(j).getSuccessors().get(i).getMinimumTravelTime()<=vitesseMin) {
+        				arc1=nodes.get(j).getSuccessors().get(i);
+        				
+        				vitesseMin=nodes.get(j).getSuccessors().get(i).getMinimumTravelTime();
+        			}
+        		}
+        		
+        	}
+        	arcs.add(arc1);
+        }
+        
         return new Path(graph, arcs);
     }
 

@@ -48,8 +48,16 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	
         	Label label_x=tas_label.deleteMin();
         	label_x.marquer();
-     
+        	System.out.println("coût label marqué :"+label_x.getCost()+"\n");
         	Node noeud_courant=label_x.getNode();
+        	
+        	if(tas_label.isValid()==true) {
+        		System.out.println("le tas est valide\n");
+        	}
+        	else {
+        		System.out.println("le tas n'est pas valide\n");
+        	}
+        	System.out.println("nb de successeurs à chercher : "+label_x.getNode().getNumberOfSuccessors()+"\n");
         	
         	
         	for(Arc arc : noeud_courant.getSuccessors()) {
@@ -97,7 +105,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
             Arc arc = label_desti.getPere();
             
             while (arc != null) {
-            	System.out.println("test\n");
+            	/*System.out.println("test\n");*/
                 arcs.add(arc);
                 label_desti = labels[arc.getOrigin().getId()];
                 arc = label_desti.getPere();
@@ -105,6 +113,17 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
             // Reverse the path...
             Collections.reverse(arcs);
+            
+            Path PathS=new Path(graph,arcs);
+            if(PathS.isValid()) {
+            	System.out.println("le chemin obtenu est bien valide\n");
+            	float l =PathS.getLength();
+            	System.out.println("vérification de la longueur du chemin obtenu:"+l+"\n");
+            	
+            }
+            else {
+            	System.out.println("le chemin obtenu n'est pas valide\n");
+            }
 
             // Create the final solution.
             solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, arcs));

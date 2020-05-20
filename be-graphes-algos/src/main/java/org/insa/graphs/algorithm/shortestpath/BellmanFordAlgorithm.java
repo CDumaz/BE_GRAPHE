@@ -89,6 +89,10 @@ public class BellmanFordAlgorithm extends ShortestPathAlgorithm {
 
             // Reverse the path...
             Collections.reverse(arcs);
+            
+            Path PathS=new Path(graph,arcs);
+            float l =PathS.getLength();
+        	System.out.println("vérification de la longueur du chemin obtenu:"+l+"\n");
 
             // Create the final solution.
             solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, arcs));

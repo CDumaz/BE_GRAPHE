@@ -20,6 +20,8 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
     protected ShortestPathSolution doRun() {
         final ShortestPathData data = getInputData();
         ShortestPathSolution solution = null;
+        int nbtabin=0;
+        int nbtabout=0;
         
         Graph graph =data.getGraph();
         List<Node>nodes=graph.getNodes();
@@ -30,29 +32,34 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
         	if(node==data.getOrigin()) {
         		labels[node.getId()]=new LabelStar(node,true,0,null,data.getDestination(),data);
         		tas_label.insert(new LabelStar(node,true,0,null,data.getDestination(),data));
+        		nbtabin++;
         	}
         }
         
+        long StartTime = System.nanoTime();
+      
         
         while(tas_label.isEmpty()==false && labels[data.getDestination().getId()].isMarque()==false) {
         	
         	Label label_x=tas_label.deleteMin();
+        	nbtabout++;
         	label_x.marquer();
-        	System.out.println("coût label marqué :"+label_x.getTotalCost()+"\n");
+        	/*System.out.println("coût label marqué :"+label_x.getTotalCost()+"\n");*/
         	Node noeud_courant=label_x.getNode();
-        	if(tas_label.isValid()==true) {
+        	
+        	/*if(tas_label.isValid()==true) {
         		System.out.println("le tas est valide\n");
         	}
         	else {
         		System.out.println("le tas n'est pas valide\n");
         	}
         	System.out.println("nb de successeurs à chercher : "+label_x.getNode().getNumberOfSuccessors()+"\n");
-        	
+        	*/
         	for(Arc arc : noeud_courant.getSuccessors()) {
                 Node noeud_destination = arc.getDestination();
                 Label label_destination = labels[noeud_destination.getId()];
                 double cout=data.getCost(arc)+label_x.getCost();
-                if(label_destination.marque==false) {
+                if(label_destination.isMarque()==false) {
                 	if (!data.isAllowed(arc)) {
                         continue;
                     }
@@ -61,19 +68,32 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
                 			label_destination.setCost(label_x.getCost()+data.getCost(arc));
                 			label_destination.setPere(arc);
                 			tas_label.insert(label_destination);
+                			//notifyNodeReached(label_destination.getNode());
+                			nbtabin++;
+                			
                 		}
                 		else {
                         	tas_label.remove(label_destination);
+                        	
                         	label_destination.setCost(cout);
                         	label_destination.setPere(arc);
                         	tas_label.insert(label_destination);
+                        	
                         	notifyNodeReached(label_destination.getNode());
+                        	
                 		}
                 	}	
                 }
         	}
         	
         }
+        
+        long EndTime = System.nanoTime();
+        
+        long CalTime = EndTime-StartTime;
+        System.out.println("temps de calcul : "+CalTime/1000000+"ms\n");
+        System.out.println("nbtabin :"+nbtabin+"  nbtabout :"+nbtabout);
+        
         
         System.out.println("fin boucle\n");
         Node noeud_desti = data.getDestination();
@@ -98,7 +118,8 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
                 label_desti = labels[arc.getOrigin().getId()];
                 arc = label_desti.getPere();
             }
-
+            
+            
             // Reverse the path...
             Collections.reverse(arcs);
             
@@ -114,6 +135,7 @@ public class AStarAlgorithm extends DijkstraAlgorithm {
             
             float l =PathS.getLength();
         	System.out.println("vérification de la longueur du chemin obtenu:"+l+"\n");
+        	
 
             // Create the final solution.
             solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, arcs));

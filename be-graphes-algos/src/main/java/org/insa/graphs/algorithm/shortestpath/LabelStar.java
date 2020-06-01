@@ -33,7 +33,7 @@ public class LabelStar extends Label {
 			return this.getCost()+this.getNode().getPoint().distanceTo(this.node_dest.getPoint());
 		}
 		else {
-			return this.getCost()+this.getNode().getPoint().distanceTo(this.node_dest.getPoint())/this.data.getMaximumSpeed();
+			return this.getCost()+this.getNode().getPoint().distanceTo(this.node_dest.getPoint())/(this.data.getGraph().getGraphInformation().getMaximumSpeed()/3.6);
 		}
 	}
 	

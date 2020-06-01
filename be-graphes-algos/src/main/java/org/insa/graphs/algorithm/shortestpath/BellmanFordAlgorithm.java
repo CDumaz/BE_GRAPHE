@@ -97,7 +97,7 @@ public class BellmanFordAlgorithm extends ShortestPathAlgorithm {
             // Create the final solution.
             solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, arcs));
         }
-
+        
         return solution;
     }
 
